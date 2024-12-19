@@ -19,11 +19,11 @@
     "contact": {
       "type": "contact",
       "settings": {
-        "full_width": true,
+        "full_width": false,
         "subheading": "Ente em contato",
         "title": "Você tem alguma pergunta?",
         "content": "",
-        "text_position": "start",
+        "text_position": "center",
         "contact_form_size": "large",
         "background": "",
         "background_gradient": "",

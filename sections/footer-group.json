@@ -117,7 +117,7 @@
           "type": "text",
           "settings": {
             "title": "",
-            "content": "<p><strong>Clique aqui e entre em contato aqui!</strong></p>",
+            "content": "<p><a href=\"/pages/contact\" title=\"Entrar em contato\"><strong>Clique aqui e entre em contato!</strong></a></p>",
             "enable_follow_on_shop": true
           }
         }

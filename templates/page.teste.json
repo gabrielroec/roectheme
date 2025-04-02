@@ -11,10 +11,114 @@
   "sections": {
     "main": {
       "type": "main-page",
-      "settings": {}
+      "disabled": true,
+      "settings": {
+        "content_width": "80ch"
+      }
+    },
+    "featured_product_8xVFFk": {
+      "type": "featured-product",
+      "blocks": {
+        "vendor_Jt7ARj": {
+          "type": "vendor",
+          "settings": {}
+        },
+        "title_fLX9gx": {
+          "type": "title",
+          "settings": {
+            "heading_tag": "h2"
+          }
+        },
+        "badges_ibyVqz": {
+          "type": "badges",
+          "settings": {}
+        },
+        "price_eDjMBJ": {
+          "type": "price",
+          "settings": {
+            "show_taxes_notice": false
+          }
+        },
+        "rating_ikfCRh": {
+          "type": "rating",
+          "settings": {
+            "show_empty": false
+          }
+        },
+        "separator_bNghbD": {
+          "type": "separator",
+          "settings": {}
+        },
+        "description_FpyN4j": {
+          "type": "description",
+          "settings": {
+            "collapse_content": false
+          }
+        },
+        "variant_picker_gaht6Q": {
+          "type": "variant_picker",
+          "settings": {
+            "hide_sold_out_variants": false,
+            "stack_blocks": true,
+            "selector_mode": "block",
+            "color_mode": "color",
+            "size_chart_page": ""
+          }
+        },
+        "quantity_selector_b4bwDW": {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        "buy_buttons_MRARWr": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_payment_button": true,
+            "show_gift_card_recipient": true,
+            "atc_button_background": "",
+            "atc_button_text_color": "",
+            "payment_button_background": "",
+            "payment_button_text_color": ""
+          }
+        },
+        "pickup_availability_NWneMC": {
+          "type": "pickup_availability",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "vendor_Jt7ARj",
+        "title_fLX9gx",
+        "badges_ibyVqz",
+        "price_eDjMBJ",
+        "rating_ikfCRh",
+        "separator_bNghbD",
+        "description_FpyN4j",
+        "variant_picker_gaht6Q",
+        "quantity_selector_b4bwDW",
+        "buy_buttons_MRARWr",
+        "pickup_availability_NWneMC"
+      ],
+      "settings": {
+        "full_width": true,
+        "product": "bombas-de-banho-cbd-pct4-laurel-pharma-linha-sunny-skies",
+        "desktop_media_width": 55,
+        "desktop_media_layout": "carousel_thumbnails_left",
+        "mobile_media_size": "expanded",
+        "mobile_carousel_control": "floating_dots",
+        "enable_video_autoplay": true,
+        "enable_video_looping": false,
+        "enable_image_zoom": true,
+        "max_image_zoom_level": 3,
+        "background": "",
+        "background_gradient": "",
+        "text_color": "",
+        "input_background": "rgba(0,0,0,0)",
+        "input_text_color": ""
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "featured_product_8xVFFk"
   ]
 }

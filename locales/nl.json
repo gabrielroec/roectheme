@@ -1,4 +1,19 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
+  "404": {
+    "general": {
+      "title": "Pagina niet gevonden",
+      "continue_shopping": "Doorgaan met winkelen"
+    }
+  },
   "general": {
     "page": "Pagina {{ page }}",
     "home": "Start",
@@ -84,7 +99,7 @@
       "view_in_space": "Bekijk in je ruimte",
       "taxes_included": "Inclusief btw.",
       "taxes_excluded": "Exclusief btw.",
-      "shipping_policy_html": "<a href=\"{{ link }}\" class=\"link\">Verzendkosten berekend<\/a> bij het afrekenen",
+      "shipping_policy_html": "<a href=\"{{ link }}\" class=\"link\">Verzendkosten berekend</a> bij het afrekenen",
       "size_chart": "Maattabel",
       "available_colors_count": {
         "one": "{{ count }} kleur beschikbaar",
@@ -93,7 +108,7 @@
     },
     "gallery": {
       "close": "Galerie sluiten",
-      "zoom": "In-\/uitzoomen",
+      "zoom": "In-/uitzoomen",
       "error": "Afbeelding kan niet worden geladen"
     },
     "price": {
@@ -308,9 +323,9 @@
       "view_cart": "Winkelwagen bekijken",
       "checkout": "Afrekenen",
       "we_accept": "We accepteren",
-      "taxes_and_shipping_policy_at_checkout_html": "Btw en <a href=\"{{ link }}\" class=\"link\">verzendkosten<\/a> berekend bij het afrekenen",
+      "taxes_and_shipping_policy_at_checkout_html": "Btw en <a href=\"{{ link }}\" class=\"link\">verzendkosten</a> berekend bij het afrekenen",
       "taxes_included_but_shipping_at_checkout": "Btw inbegrepen en verzendkosten berekend bij het afrekenen",
-      "taxes_included_and_shipping_policy_html": "Btw inbegrepen. <a href=\"{{ link }}\" class=\"link\">Verzendkosten<\/a> berekend bij het afrekenen.",
+      "taxes_included_and_shipping_policy_html": "Btw inbegrepen. <a href=\"{{ link }}\" class=\"link\">Verzendkosten</a> berekend bij het afrekenen.",
       "taxes_and_shipping_at_checkout": "Btw en verzendkosten berekend bij het afrekenen"
     },
     "order": {
@@ -336,12 +351,6 @@
       "one_result": "Er is één verzendtarief voor je adres:",
       "multiple_results": "Er zijn meerdere verzendtarieven voor je adres:",
       "error": "Er zijn een of meer fouten opgetreden bij het ophalen van de verzendtarieven:"
-    }
-  },
-  "404": {
-    "general": {
-      "title": "Pagina niet gevonden",
-      "continue_shopping": "Doorgaan met winkelen"
     }
   },
   "search": {
@@ -413,6 +422,51 @@
         "one": "Het heeft {{ count }} recensie gekregen.",
         "other": "Het heeft {{ count }} recensies gekregen."
       }
+    }
+  },
+  "pagefly": {
+    "products": {
+      "product": {
+        "regular_price": "Regular price",
+        "sold_out": "Sold out",
+        "unavailable": "Unavailable",
+        "on_sale": "Sale",
+        "quantity": "Quantity",
+        "add_to_cart": "Add to cart",
+        "back_to_collection": "Back to {{ title }}",
+        "view_details": "View details"
+      }
+    },
+    "article": {
+      "tags": "Tags:",
+      "all_topics": "All topics",
+      "by_author": "by {{ author }}",
+      "posted_in": "Posted in",
+      "read_more": "Read more",
+      "back_to_blog": "Back to {{ title }}"
+    },
+    "comments": {
+      "title": "Leave a comment",
+      "name": "Name",
+      "email": "Email",
+      "message": "Message",
+      "post": "Post comment",
+      "moderated": "Please note, comments must be approved before they are published",
+      "success_moderated": "Your comment was posted successfully. We will publish it in a little while, as our blog is moderated.",
+      "success": "Your comment was posted successfully! Thank you!",
+      "comments_with_count": {
+        "one": "{{ count }} comment",
+        "other": "{{ count }} comments"
+      }
+    },
+    "password_page": {
+      "login_form_message": "Enter store using password:",
+      "login_form_password_label": "Password",
+      "login_form_password_placeholder": "Your password",
+      "login_form_submit": "Enter",
+      "signup_form_email_label": "Email",
+      "signup_form_success": "We will send you an email right before we open!",
+      "password_link": "Enter using password"
     }
   }
 }

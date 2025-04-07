@@ -34,6 +34,7 @@ This file can be re-written at any time.
     var variantRendered = false
     var cachedOptimizations = JSON.parse(localStorage.getItem(optimizationsCacheKey)) || {}
     var personalizationVariant;
+    var originaPersonalizationVariants = [];
 
     function getCookie(cname) {
       let name = cname + "=";
@@ -436,6 +437,8 @@ setVisitorDetails()
               break
             }
           }
+          // The personalization was a target match but the audience may not be found. We collect this for tracking purposes.
+          originaPersonalizationVariants.push(optimization.variants.find(variant => variant.config.original === true))
         }
       }
 
@@ -543,6 +546,16 @@ setVisitorDetails()
       });
     }
 
+    function trackOriginalPersonalizationsImpressions() {
+      // Since we are loading the default of the page we track the original variants of
+      // personalizations that matched this target to keep analytics accurate
+      console.debug("Tracking original personalization variants", originaPersonalizationVariants)
+
+      originaPersonalizationVariants.forEach(originalPeVariant => {
+        trackVariantImpression(originalPeVariant)
+      })
+    }
+
     function processVariant(variant) {
       let variantToLoad = variant
       checkStoreTheme(variant?.config?.theme_id)
@@ -562,6 +575,7 @@ setVisitorDetails()
       if (!variantToLoad) {
         console.debug("No variant found")
         trackVariantImpression(null)
+        trackOriginalPersonalizationsImpressions()
         return;
       }
 

@@ -537,12 +537,16 @@ setVisitorDetails()
         return;
       }
 
+      const optimizationType = optimizations.find(o => o.id == variant.optimization_id).type
+      const appType = optimizationType == "ab_test" ? "ab_testing" : "personalization"
+
       console.debug("Tracking variant impression", variant.id);
       shogunLoaded({
         optimization_id: variant.optimization_id,
         variant_id: variant.id,
         page_type: pageType,
-        page_id: pageId
+        page_id: pageId,
+        app_type: appType
       });
     }
 

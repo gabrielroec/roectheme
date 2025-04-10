@@ -11,7 +11,7 @@ This file can be re-written at any time.
     const config = {{shop.metafields.shgabc.optimizations | default: 'null'}} || {}
     const optimizations = config.expires_at > Date.now() ? (config.optimizations || []) : []
     const currentThemeId = "173429751992"
-    const defaultThemeId = config.default_theme_id
+    const defaultThemeId = String(config.default_theme_id)
     const pageId = "{{ content.id }}"
     const pageType = "{% if article %}article{% elsif blog %}blog{% elsif page %}page{% elsif product %}product{% elsif collection %}collection{% elsif metaobject %}metaobject{% else %}homepage{% endif %}"
     const templateName = "{{ template.name }}"
@@ -25,16 +25,23 @@ This file can be re-written at any time.
     const customerId = "{{ customer.id }}"
     const visitorDetailsKey = '_shg_ab_visitor_details'
     const optimizationsCacheKey = '_shg_ab_optimizations_cache'
+    const themeCacheKey = '_shg_ab_theme_cache'
     const currentTime = new Date().getTime()
     const numberOfBins = 10000
     const distributionMethod = urlParams.get('shgMethod') || config.method;
     const sessionId = urlParams.get('shgSessionId') || getCookie('_shopify_s')
     const designMode = {{ request.design_mode }}
+    const cachedOptimizations = JSON.parse(localStorage.getItem(optimizationsCacheKey)) || {}
+    const themeCachedOptimizations = JSON.parse(localStorage.getItem(themeCacheKey)) || {}
+    const cachedThemeTestVariant = activeThemeTestVariant()
 
     var variantRendered = false
-    var cachedOptimizations = JSON.parse(localStorage.getItem(optimizationsCacheKey)) || {}
     var personalizationVariant;
     var originaPersonalizationVariants = [];
+
+    console.debug("Optimizations: ", optimizations)
+    console.debug("Current theme ID: ", currentThemeId)
+    console.debug("Default theme ID: ", defaultThemeId)
 
     function getCookie(cname) {
       let name = cname + "=";
@@ -259,9 +266,8 @@ setVisitorDetails()
     }
 
     function matchTestToPersonalization(optimization) {
-      const persTemplate = extractPartialTemplateKeyFromFullTemplateKey(personalizationVariant.config.full_template_key)
-
       if(optimization.scope == "page" || optimization.scope == "template") {
+        const persTemplate = extractPartialTemplateKeyFromFullTemplateKey(personalizationVariant.config.full_template_key)
         const defaultTemplate = getPartialTemplateKeyFromDefaultVariant(optimization)
         if(persTemplate == defaultTemplate) {
           console.debug("Personalization to Test match found, matching target found", persTemplate, defaultTemplate)
@@ -294,17 +300,12 @@ setVisitorDetails()
         }
       }
 
-      const targetTemplate = getPartialTemplateKeyFromDefaultVariant(optimization)
       if(optimization.scope == "template") {
+        const targetTemplate = getPartialTemplateKeyFromDefaultVariant(optimization)
         if(currentPartialTemplateKey == targetTemplate) {
           console.debug("Current template is targeted by the template optimization", currentPartialTemplateKey, targetTemplate)
           return true
         }
-      }
-
-      if(optimization.scope == 'theme' && currentThemeId == optimization.config.theme_id) {
-        console.debug("Current theme is targeted by the theme optimization", currentThemeId, optimization.config.theme_id)
-        return true
       }
 
       console.debug("No optimization with matching target found")
@@ -396,11 +397,25 @@ setVisitorDetails()
       });
     }
 
-    function checkStoreTheme(themeId) {
+    function checkStoreTheme(variant) {
+      if (optimizationDisabled) {
+        return
+      }
+      let themeId = variant?.config?.theme_id
+
+      if (cachedThemeTestVariant) {
+        console.debug("On the cached theme for the theme test, no redirect needed")
+        removePreviewBarIframe()
+        return
+      }
       // If no themeId is provided, use the default
       if(!themeId) {
         console.debug("No themeId provided, using default theme")
         themeId = defaultThemeId
+      } else {
+        // Cache the theme we are about to redirect to
+        themeCachedOptimizations[themeId] = variant?.id || null
+        localStorage.setItem(themeCacheKey, JSON.stringify(themeCachedOptimizations))
       }
 
       // If we're already on the correct theme, no need to redirect
@@ -423,9 +438,32 @@ setVisitorDetails()
       throw new Error("Redirecting to variant theme")
     }
 
+    function assignThemeTestVariant(themeTest) {
+      if (matchesAudience(themeTest.config)) {
+        const variant = getRandomVariantForOptimization(themeTest)
+        console.debug("Assigned to theme test variant", variant)
+        return variant
+      }
+    }
+
     function getVariant() {
       const personalizations = optimizations.filter(optimization => optimization?.type === "personalization")
-      const abTests = optimizations.filter(optimization => optimization?.type === "ab_test")
+      const abTests = optimizations.filter(optimization => optimization?.type === "ab_test" && optimization.scope !== "theme")
+      const themeTests = optimizations.filter(optimization => optimization?.type === "ab_test" && optimization.scope === "theme")
+
+      // Slot user into a theme test if one is running
+      if (themeTests.length > 0 && !themeCachedOptimizations[currentThemeId]) {
+        console.debug("No theme test variant cached, assigning user to a theme test variant")
+        const themeVariant = assignThemeTestVariant(themeTests[0])
+        if (themeVariant) {
+          return themeVariant
+        }
+      }
+
+      if (currentThemeId != defaultThemeId) {
+        console.debug("Not on the default theme, skipping variant selection")
+        return
+      }
 
       // Check personalizations first
       for (let optimization of personalizations) {
@@ -494,6 +532,9 @@ setVisitorDetails()
     }
 
     function loadVariant(variant, xhr) {
+      if (variant.config.theme_id) {
+        return
+      }
       const url = new URL(window.location.href)
 
       const viewParam = extractViewParamFromFullTemplateKey(variant.config.full_template_key)
@@ -560,9 +601,33 @@ setVisitorDetails()
       })
     }
 
+    function activeThemeTestVariant() {
+      const themeOptimizationVariants = optimizations.filter(optimization => optimization.scope === "theme")
+      const themeVariants = themeOptimizationVariants.flatMap(optimization => optimization.variants)
+      if (themeVariants.length === 0) {
+        // No theme optimizations are running so it is safe to remove the cache
+        localStorage.removeItem(themeCacheKey)
+      }
+
+      const runningThemeTestVariant = themeVariants.find(variant => variant.id === themeCachedOptimizations[currentThemeId])
+
+      if (runningThemeTestVariant) {
+        console.debug("Running theme test cached variant found")
+        return runningThemeTestVariant
+      }
+    }
+
+    function trackThemeTestVariant() {
+      if (cachedThemeTestVariant) {
+        console.debug("Tracking theme test variant impression", cachedThemeTestVariant)
+        trackVariantImpression(cachedThemeTestVariant)
+      } else {
+        console.debug("No active theme test variant found")
+      }
+    }
+
     function processVariant(variant) {
       let variantToLoad = variant
-      checkStoreTheme(variant?.config?.theme_id)
 
       if(personalizationVariant) {
         console.debug("Personalization variant found", personalizationVariant)
@@ -575,6 +640,8 @@ setVisitorDetails()
           // Allow the test variant to be loaded
         }
       }
+
+      checkStoreTheme(variantToLoad)
 
       if (!variantToLoad) {
         console.debug("No variant found")
@@ -599,6 +666,9 @@ setVisitorDetails()
         console.debug("Design mode enabled, skipping variant selection")
         return;
       }
+
+      // If a Theme test is running we need to track it all over the site
+      trackThemeTestVariant()
 
       const variant = getVariant()
       processVariant(variant);
